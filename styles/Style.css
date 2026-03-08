@@ -1,0 +1,245 @@
+/*
+ * Kumari Cinema Admin - Soft blue theme (consistent).
+ */
+
+/* ========== Main content - full screen on all pages ========== */
+.main-content {
+    width: calc(100vw - 220px) !important;
+    max-width: none !important;
+    box-sizing: border-box;
+    color: #334155;
+}
+
+/* Dashboard: full height as well (fills entire browser window) */
+.main-content:has(.dashboard-page) {
+    min-height: calc(100vh - 60px);
+    display: flex;
+    flex-direction: column;
+}
+.main-content:has(.dashboard-page) .dashboard-page {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+/* Page title */
+.main-content h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #4a7ab8;
+    border-bottom: 3px solid #5b8dc9;
+    padding-bottom: 0.5rem;
+    letter-spacing: 0.02em;
+}
+
+/* Section headings (tables and forms) */
+.main-content h3.section-heading {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 0.75rem;
+    margin-top: 1.5rem;
+    letter-spacing: 0.02em;
+}
+
+.main-content h3.section-heading:first-of-type {
+    margin-top: 0;
+}
+
+/* Spacing between sections */
+.main-content > br {
+    display: block;
+    margin-bottom: 1.5rem;
+    content: "";
+}
+
+/* ========== Tables - soft blue header, white body ========== */
+.main-content table {
+    width: 100% !important;
+    max-width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+    background: #fff !important;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(91, 141, 201, 0.1);
+}
+
+/* Table header - soft blue */
+.main-content table thead th,
+.main-content table tr:first-child th,
+.main-content table th {
+    background: linear-gradient(180deg, #5b8dc9 0%, #4a7ab8 100%) !important;
+    color: #fff !important;
+    font-weight: 600;
+    padding: 14px 18px;
+    text-align: left;
+    border: none !important;
+    border-bottom: none !important;
+    letter-spacing: 0.03em;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+/* Table body */
+.main-content table tbody tr td,
+.main-content table td {
+    padding: 14px 18px;
+    border-bottom: 1px solid #f1f5f9 !important;
+    color: #475569 !important;
+    background: #fff !important;
+}
+
+.main-content table tbody tr:nth-child(even) td {
+    background: #f8fafc !important;
+}
+
+.main-content table tbody tr:hover td {
+    background: #eef5fc !important;
+}
+
+.main-content table tbody tr:last-child td {
+    border-bottom: none !important;
+}
+
+/* Footer / Pager */
+.main-content table tfoot td,
+.main-content table tr.footer-style td {
+    background: #f1f5f9 !important;
+    color: #475569 !important;
+    padding: 12px 18px;
+    border-top: 1px solid #e2e8f0 !important;
+    border-bottom: none !important;
+}
+
+/* ========== FormView ========== */
+.main-content table td:only-child,
+.main-content .form-view-style td {
+    vertical-align: top;
+}
+
+.main-content table td {
+    font-size: 0.95rem;
+}
+
+.main-content table[id*="FormView"] {
+    margin-top: 1.25rem;
+    margin-bottom: 1.5rem;
+    background: #fff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+    box-shadow: 0 4px 20px rgba(91, 141, 201, 0.1) !important;
+}
+
+.main-content table[id*="FormView"] td {
+    padding: 1.25rem 1.5rem !important;
+    line-height: 1.7;
+    vertical-align: top;
+    border: none !important;
+    border-bottom: none !important;
+    background: #fff !important;
+    color: #475569 !important;
+}
+
+.main-content table[id*="FormView"] td br {
+    display: block;
+    margin-top: 0.875rem;
+    margin-bottom: 0.125rem;
+}
+
+.main-content table[id*="FormView"] input[type="text"],
+.main-content table[id*="FormView"] input[type="number"],
+.main-content table[id*="FormView"] input[type="email"],
+.main-content table[id*="FormView"] input[type="password"],
+.main-content table[id*="FormView"] input[type="datetime"],
+.main-content table[id*="FormView"] input[type="datetime-local"],
+.main-content table[id*="FormView"] input[type="date"] {
+    display: block;
+    margin-top: 0.35rem;
+    margin-bottom: 0.125rem;
+    min-width: 200px;
+    max-width: 320px;
+}
+
+.main-content table[id*="FormView"] td > a {
+    margin-top: 1rem;
+    margin-bottom: 0.25rem;
+}
+
+.main-content table[id*="FormView"] tbody tr:nth-child(even) td,
+.main-content table[id*="FormView"] tbody tr:hover td {
+    background: #fff !important;
+}
+
+/* ========== Inputs ========== */
+.main-content input[type="text"],
+.main-content input[type="number"],
+.main-content input[type="email"],
+.main-content input[type="password"],
+.main-content input[type="datetime"],
+.main-content input[type="datetime-local"],
+.main-content input[type="date"] {
+    padding: 10px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    max-width: 100%;
+    box-sizing: border-box;
+    background: #fff;
+    color: #334155;
+}
+
+.main-content input[type="text"]:focus,
+.main-content input[type="number"]:focus,
+.main-content input:focus {
+    outline: none;
+    border-color: #5b8dc9;
+    box-shadow: 0 0 0 3px rgba(91, 141, 201, 0.2);
+}
+
+/* ========== LinkButtons - soft blue ========== */
+.main-content table a {
+    display: inline-block;
+    padding: 8px 16px;
+    margin-right: 8px;
+    margin-top: 2px;
+    color: #fff !important;
+    background: #5b8dc9 !important;
+    text-decoration: none !important;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.main-content table a:hover {
+    background: #4a7ab8 !important;
+    color: #fff !important;
+}
+
+/* ========== Labels ========== */
+.main-content label,
+.main-content table td span {
+    color: #475569;
+    font-size: 0.95rem;
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 768px) {
+    .main-content {
+        width: calc(100vw - 60px) !important;
+    }
+    .main-content table {
+        font-size: 0.9rem;
+    }
+    .main-content table th,
+    .main-content table td {
+        padding: 10px 12px;
+    }
+}

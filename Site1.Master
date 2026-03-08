@@ -1,0 +1,146 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site1.Master.cs" Inherits="kumari_cinema_web.Site1" %>
+<!DOCTYPE html>
+<html>
+<head runat="server">
+    <title>Cinema Web</title>
+    <link href="~/styles/Style.css" rel="stylesheet" runat="server" />
+    <style>
+        /* RESET & BODY - Soft blue theme */
+        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background:#eef2f7; color:#334155; min-height:100vh; }
+
+        /* SIDEBAR - Soft blue */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 220px;
+            height: 100vh;
+            background: linear-gradient(180deg, #6b9bd1 0%, #5b8dc9 100%);
+            color: #f0f6fc;
+            padding-top: 24px;
+            box-shadow: 4px 0 24px rgba(91, 141, 201, 0.25);
+            transition: width 0.3s;
+            border-right: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 28px;
+            font-size: 1.35em;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            color: #fff;
+            border-bottom: 1px solid rgba(255,255,255,0.25);
+            padding-bottom: 12px;
+            margin-left: 16px;
+            margin-right: 16px;
+        }
+
+        .sidebar ul { list-style: none; padding: 0 12px; }
+        .sidebar ul li { margin: 6px 0; }
+
+        .sidebar ul li a {
+            display: block;
+            padding: 12px 16px;
+            text-decoration: none;
+            color: #e8f0fa;
+            font-size: 0.95em;
+            border-radius: 8px;
+            transition: all 0.25s ease;
+        }
+
+        .sidebar ul li a:hover {
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+            padding-left: 20px;
+        }
+
+        .sidebar ul li a.active {
+            background: rgba(255,255,255,0.25);
+            color: #fff;
+            padding-left: 20px;
+            border-left: 3px solid #fff;
+        }
+
+        /* HEADER - Soft blue (matches sidebar) */
+        header {
+            position: fixed;
+            top: 0;
+            left: 220px;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(90deg, #5b8dc9 0%, #4a7ab8 100%);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: left 0.3s;
+            z-index: 1000;
+            box-shadow: 0 2px 16px rgba(74, 122, 184, 0.3);
+            border-bottom: none;
+        }
+
+        /* MAIN CONTENT - full screen: fills from sidebar to right edge of viewport */
+        .main-content {
+            margin-left: 220px;
+            margin-top: 60px;
+            padding: 28px;
+            min-height: calc(100vh - 60px);
+            width: calc(100vw - 220px);
+            max-width: none;
+            box-sizing: border-box;
+            transition: margin-left 0.3s;
+            background: #fff;
+        }
+
+        /* RESPONSIVE: collapse sidebar on small screens */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 60px;
+                padding-top: 20px;
+            }
+            .sidebar h2 { display: none; }
+            .sidebar ul li a { font-size: 0; padding: 12px 15px; }
+            .sidebar ul li a::before {
+                content: attr(data-icon);
+                font-size: 1.3em;
+                display: inline-block;
+                color: #e8f0fa;
+            }
+            .main-content { margin-left: 60px; width: calc(100vw - 60px); padding: 20px; }
+            header { left: 60px; }
+        }
+    </style>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <h2>Cinema</h2>
+            <ul>
+                <li><asp:HyperLink runat="server" NavigateUrl="~/pages/Dashboard.aspx" Text="Dashboard" CssClass='<%# Request.Url.AbsolutePath.EndsWith("Dashboard.aspx") ? "active" : "" %>' data-icon="📊" /></li>
+                <li><asp:HyperLink runat="server" NavigateUrl="~/pages/MOVIE.aspx" Text="Movie" CssClass='<%# Request.Url.AbsolutePath.EndsWith("MOVIE.aspx") ? "active" : "" %>' data-icon="🎬" /></li>
+                <li><asp:HyperLink runat="server" NavigateUrl="~/pages/Theatre.aspx" Text="Theatre" CssClass='<%# Request.Url.AbsolutePath.EndsWith("Theatre.aspx") ? "active" : "" %>' data-icon="🏛️" /></li>
+                <li><asp:HyperLink runat="server" NavigateUrl="~/pages/SHOWTIME.aspx" Text="Showtime" CssClass='<%# Request.Url.AbsolutePath.EndsWith("SHOWTIME.aspx") ? "active" : "" %>' data-icon="🕒" /></li>
+                <li><asp:HyperLink runat="server" NavigateUrl="~/pages/TICKET.aspx" Text="Ticket" CssClass='<%# Request.Url.AbsolutePath.EndsWith("TICKET.aspx") ? "active" : "" %>' data-icon="🎟️" /></li>
+                <li><asp:HyperLink runat="server" NavigateUrl="~/pages/UserDetail.aspx" Text="Users" CssClass='<%# Request.Url.AbsolutePath.EndsWith("UserDetail.aspx") ? "active" : "" %>' data-icon="👤" /></li>
+                <li><asp:HyperLink runat="server" NavigateUrl="~/Pages/UserTickets.aspx" Text="User tickets" CssClass='<%# Request.Url.AbsolutePath.EndsWith("UserTickets.aspx") ? "active" : "" %>' data-icon="🎫" /></li>
+            </ul>
+        </div>
+
+        <!-- HEADER -->
+        <header>
+            Welcome to Kumari Cinema Admin
+        </header>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server">
+            </asp:ContentPlaceHolder>
+        </div>
+    </form>
+</body>
+</html>
