@@ -48,4 +48,43 @@
             <asp:Parameter Name="MOVIEID" Type="Decimal" />
         </DeleteParameters>
     </asp:SqlDataSource>
+
+    <h3 class="section-heading">Add new movie</h3>
+    <asp:FormView ID="FormView1" runat="server" DataKeyNames="MOVIEID" DataSourceID="SqlDataSource1" DefaultMode="Insert" CssClass="form-view-style">
+        <InsertItemTemplate>
+            MOVIEID:
+            <asp:TextBox ID="MOVIEIDTextBox" runat="server" Text='<%# Bind("MOVIEID") %>' /><br />
+            MOVIE_TITLE:
+            <asp:TextBox ID="MOVIE_TITLETextBox" runat="server" Text='<%# Bind("MOVIE_TITLE") %>' /><br />
+            MOVIE_DURATION:
+            <asp:TextBox ID="MOVIE_DURATIONTextBox" runat="server" Text='<%# Bind("MOVIE_DURATION") %>' /><br />
+            MOVIE_LANGUAGE:
+            <asp:TextBox ID="MOVIE_LANGUAGETextBox" runat="server" Text='<%# Bind("MOVIE_LANGUAGE") %>' /><br />
+            MOVIE_GENRE:
+            <asp:TextBox ID="MOVIE_GENRETextBox" runat="server" Text='<%# Bind("MOVIE_GENRE") %>' /><br />
+            MOVIE_RELEASE_DATE:
+            <asp:TextBox ID="MOVIE_RELEASE_DATETextBox" runat="server" Text='<%# Bind("MOVIE_RELEASE_DATE") %>' /><br />
+            <asp:LinkButton ID="InsertButton" runat="server" CommandName="Insert" Text="Insert" />
+            &nbsp;<asp:LinkButton ID="InsertCancelButton" runat="server" CommandName="Cancel" Text="Cancel" />
+        </InsertItemTemplate>
+        <ItemTemplate>
+            MOVIEID: <asp:Label ID="MOVIEIDLabel" runat="server" Text='<%# Eval("MOVIEID") %>' /><br />
+            MOVIE_TITLE: <asp:Label ID="MOVIE_TITLELabel" runat="server" Text='<%# Bind("MOVIE_TITLE") %>' /><br />
+            MOVIE_DURATION: <asp:Label ID="MOVIE_DURATIONLabel" runat="server" Text='<%# Bind("MOVIE_DURATION") %>' /><br />
+            MOVIE_LANGUAGE: <asp:Label ID="MOVIE_LANGUAGELabel" runat="server" Text='<%# Bind("MOVIE_LANGUAGE") %>' /><br />
+            MOVIE_GENRE: <asp:Label ID="MOVIE_GENRELabel" runat="server" Text='<%# Bind("MOVIE_GENRE") %>' /><br />
+            MOVIE_RELEASE_DATE: <asp:Label ID="MOVIE_RELEASE_DATELabel" runat="server" Text='<%# Bind("MOVIE_RELEASE_DATE") %>' /><br />
+            <asp:LinkButton ID="NewButton" runat="server" CommandName="New" Text="New" />
+        </ItemTemplate>
+        <EditItemTemplate>
+            MOVIEID: <asp:Label ID="MOVIEIDLabel1" runat="server" Text='<%# Eval("MOVIEID") %>' /><br />
+            MOVIE_TITLE: <asp:TextBox ID="MOVIE_TITLETextBox" runat="server" Text='<%# Bind("MOVIE_TITLE") %>' /><br />
+            MOVIE_DURATION: <asp:TextBox ID="MOVIE_DURATIONTextBox" runat="server" Text='<%# Bind("MOVIE_DURATION") %>' /><br />
+            MOVIE_LANGUAGE: <asp:TextBox ID="MOVIE_LANGUAGETextBox" runat="server" Text='<%# Bind("MOVIE_LANGUAGE") %>' /><br />
+            MOVIE_GENRE: <asp:TextBox ID="MOVIE_GENRETextBox" runat="server" Text='<%# Bind("MOVIE_GENRE") %>' /><br />
+            MOVIE_RELEASE_DATE: <asp:TextBox ID="MOVIE_RELEASE_DATETextBox" runat="server" Text='<%# Bind("MOVIE_RELEASE_DATE") %>' /><br />
+            <asp:LinkButton ID="UpdateButton" runat="server" CommandName="Update" Text="Update" />
+            &nbsp;<asp:LinkButton ID="UpdateCancelButton" runat="server" CommandName="Cancel" Text="Cancel" />
+        </EditItemTemplate>
+    </asp:FormView>
 </asp:Content>
