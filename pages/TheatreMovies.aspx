@@ -171,34 +171,23 @@
 <body>
     <form id="form1" runat="server">
         <div class="container">
-
-            <!-- User Tickets section -->
-            <h2>User Ticket Details</h2>
+            <h2>Theater City Hall – Movie Details and Showtimes</h2>
+            <p style="margin-bottom: 16px; color: #64748b;">
+                Select a theater city hall, or choose <strong>All</strong> to see all available movie showtimes.
+            </p>
             <div class="search-box">
-                User ID :
-                <asp:TextBox ID="txtUserId" runat="server" />
-                <asp:Button ID="btnSearch" runat="server" Text="Search" OnClick="btnSearch_Click" />
+                <label for="ddlTheaterCityHall" style="font-weight: 600;">Theater City Hall:</label>
+                <asp:DropDownList
+                    ID="ddlTheaterCityHall"
+                    runat="server"
+                    CssClass="search-dropdown"
+                    AutoPostBack="true"
+                    OnSelectedIndexChanged="ddlTheaterCityHall_SelectedIndexChanged" />
             </div>
-            <asp:Label ID="lblMessage" runat="server" CssClass="message" Visible="false" />
+            <asp:Label ID="lblTheaterMessage" runat="server" CssClass="message" Visible="false" />
             <div class="grid">
-                <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="true" Width="100%" />
+                <asp:GridView ID="GridViewTheaterCityHall" runat="server" AutoGenerateColumns="true" Width="100%" />
             </div>
-
-            <!-- Theater City Hall movie details and showtimes section -->
-            <div class="section-spacer">
-                <h2>Theater City Hall – Movie Details and Showtimes</h2>
-                <p style="margin-bottom: 16px; color: #64748b;">For any theater city hall, the detail of movie and showtime is shown below.</p>
-                <div class="search-box">
-                    <label for="ddlTheaterCityHall" style="font-weight: 600;">Theater City Hall:</label>
-                    <asp:DropDownList ID="ddlTheaterCityHall" runat="server" CssClass="search-dropdown" />
-                    <asp:Button ID="btnFilterTheater" runat="server" Text="Search" OnClick="btnFilterTheater_Click" />
-                </div>
-                <asp:Label ID="lblTheaterMessage" runat="server" CssClass="message" Visible="false" />
-                <div class="grid">
-                    <asp:GridView ID="GridViewTheaterCityHall" runat="server" AutoGenerateColumns="true" Width="100%" />
-                </div>
-            </div>
-
         </div>
     </form>
 </body>
