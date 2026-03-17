@@ -41,20 +41,35 @@ ORDER BY t.THEATRE_CITY_HALL, ms.HALLID, s.SHOW_TIME";
 
         private const string SqlCityHalls = "SELECT DISTINCT THEATRE_CITY_HALL FROM THEATRE ORDER BY THEATRE_CITY_HALL";
 
+        private const string SqlMovies = @"
+SELECT MOVIEID, MOVIE_TITLE
+FROM MOVIE
+ORDER BY MOVIE_TITLE";
+
         private const string SqlTop3Occupancy = @"
-SELECT * FROM (
-    SELECT M.MOVIE_TITLE, H.HALLID, H.HALL_CAPACITY, COUNT(T.TICKETID) AS TICKETS_SOLD,
-           ROUND((COUNT(T.TICKETID) / H.HALL_CAPACITY) * 100, 2) AS OCCUPANCY_PERCENT
-    FROM MOVIE M
-    JOIN MOVIE_SHOW MS ON M.MOVIEID = MS.MOVIEID
-    JOIN SHOW S ON MS.SHOWID = S.SHOWID
-    JOIN SHOW_TICKET ST ON S.SHOWID = ST.SHOWID
-    JOIN TICKET T ON ST.TICKETID = T.TICKETID
-    JOIN HALL H ON MS.HALLID = H.HALLID
-    WHERE T.TICKET_STATUS = 'PAID'
-    GROUP BY M.MOVIE_TITLE, H.HALLID, H.HALL_CAPACITY
+SELECT *
+FROM (
+    SELECT 
+        m.MOVIE_TITLE,
+        th.THEATRE_NAME,
+        th.THEATRE_CITY_HALL,
+        h.HALLID,
+        h.HALL_CAPACITY,
+        COUNT(t.TICKETID) AS SEATS_BOOKED,
+        ROUND((COUNT(t.TICKETID)/h.HALL_CAPACITY)*100, 2) AS OCCUPANCY_PERCENT
+    FROM MOVIE m
+    JOIN MOVIE_SHOW ms ON m.MOVIEID = ms.MOVIEID
+    JOIN SHOW s ON ms.SHOWID = s.SHOWID
+    JOIN SHOW_TICKET st ON s.SHOWID = st.SHOWID
+    JOIN TICKET t ON st.TICKETID = t.TICKETID
+    JOIN HALL h ON ms.HALLID = h.HALLID
+    JOIN THEATRE th ON ms.THEATREID = th.THEATREID
+    WHERE m.MOVIEID = :MOVIEID
+      AND t.BOOKING_STATUS = 'Booked'
+    GROUP BY m.MOVIE_TITLE, th.THEATRE_NAME, th.THEATRE_CITY_HALL, h.HALLID, h.HALL_CAPACITY
     ORDER BY OCCUPANCY_PERCENT DESC
-) WHERE ROWNUM <= 3";
+)
+WHERE ROWNUM <= 3";
 
         private bool ReportVisible
         {
@@ -78,6 +93,8 @@ SELECT * FROM (
             ReportPanel.Visible = true;
             if (ddlReportTheaterCityHall.Items.Count == 0)
                 BindReportCityHallDropdown();
+            if (ddlReportMovie.Items.Count == 0)
+                BindReportMovieDropdown();
             BindReportTheaterCityHall();
             BindReportTop3Occupancy();
         }
@@ -108,6 +125,11 @@ SELECT * FROM (
         {
             lblReportTheaterMessage.Visible = false;
             BindReportTheaterCityHall();
+        }
+
+        protected void ddlReportMovie_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            BindReportTop3Occupancy();
         }
 
         private void BindReportUserTickets(decimal userId)
@@ -252,6 +274,9 @@ SELECT * FROM (
                     {
                         cmd.CommandText = SqlTop3Occupancy;
                         cmd.CommandType = CommandType.Text;
+                        var p = new System.Data.OracleClient.OracleParameter("MOVIEID", System.Data.OracleClient.OracleType.Number);
+                        p.Value = GetSelectedReportMovieId();
+                        cmd.Parameters.Add(p);
                         using (var da = new System.Data.OracleClient.OracleDataAdapter(cmd))
                             da.Fill(dt);
                     }
@@ -264,6 +289,64 @@ SELECT * FROM (
                 GridViewReportOccupancy.DataSource = null;
                 GridViewReportOccupancy.DataBind();
             }
+        }
+
+        private void BindReportMovieDropdown()
+        {
+            string connStr = ConfigurationManager.ConnectionStrings["ConnectionString"]?.ConnectionString;
+            ddlReportMovie.Items.Clear();
+
+            if (string.IsNullOrEmpty(connStr))
+            {
+                ddlReportMovie.Items.Add(new ListItem("No movies (missing connection)", "0"));
+                return;
+            }
+
+            try
+            {
+                var dt = new DataTable();
+                using (var conn = new System.Data.OracleClient.OracleConnection(connStr))
+                {
+                    conn.Open();
+                    using (var cmd = conn.CreateCommand())
+                    {
+                        cmd.CommandText = SqlMovies;
+                        cmd.CommandType = CommandType.Text;
+                        using (var da = new System.Data.OracleClient.OracleDataAdapter(cmd))
+                            da.Fill(dt);
+                    }
+                }
+
+                ddlReportMovie.DataSource = dt;
+                ddlReportMovie.DataTextField = "MOVIE_TITLE";
+                ddlReportMovie.DataValueField = "MOVIEID";
+                ddlReportMovie.DataBind();
+
+                if (ddlReportMovie.Items.Count == 0)
+                {
+                    ddlReportMovie.Items.Add(new ListItem("No movies found", "0"));
+                }
+                else
+                {
+                    ddlReportMovie.SelectedIndex = 0;
+                }
+            }
+            catch
+            {
+                ddlReportMovie.Items.Clear();
+                ddlReportMovie.Items.Add(new ListItem("Unable to load movies", "0"));
+            }
+        }
+
+        private decimal GetSelectedReportMovieId()
+        {
+            if (ddlReportMovie != null && decimal.TryParse(ddlReportMovie.SelectedValue, out decimal movieId) && movieId > 0)
+            {
+                return movieId;
+            }
+
+            // Fallback to 1 to match the sample query/output when dropdown is empty.
+            return 1;
         }
 
         private void BindStatistics()

@@ -24,7 +24,9 @@ SELECT u.USERID,
        s.END_DATETIME
 FROM USERS u
 LEFT JOIN SHOW_TICKET stm ON u.USERID = stm.USERID
-LEFT JOIN TICKET t ON stm.TICKETID = t.TICKETID
+LEFT JOIN TICKET t 
+       ON stm.TICKETID = t.TICKETID
+      AND t.PURCHASE_DATETIME >= ADD_MONTHS(TRUNC(SYSDATE), -6)
 LEFT JOIN SHOW s ON stm.SHOWID = s.SHOWID
 LEFT JOIN MOVIE m ON stm.MOVIEID = m.MOVIEID
 WHERE u.USERID = :USERID
@@ -106,11 +108,29 @@ ORDER BY t.PURCHASE_DATETIME DESC";
                 ShowMessage("Error: " + ex.Message);
             }
 
+            bool hasTicketRows = false;
+            if (dt.Rows.Count > 0 && dt.Columns.Contains("TICKETID"))
+            {
+                foreach (DataRow row in dt.Rows)
+                {
+                    if (row["TICKETID"] != DBNull.Value)
+                    {
+                        hasTicketRows = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!hasTicketRows && !lblMessage.Visible)
+            {
+                GridView1.DataSource = null;
+                GridView1.DataBind();
+                ShowMessage("This user has no tickets in the last 6 months.");
+                return;
+            }
+
             GridView1.DataSource = dt;
             GridView1.DataBind();
-
-            if (dt.Rows.Count == 0 && !lblMessage.Visible)
-                ShowMessage("No records found for this User ID.");
         }
     }
 }

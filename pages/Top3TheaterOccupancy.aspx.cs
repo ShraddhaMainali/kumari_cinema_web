@@ -30,23 +30,35 @@ LEFT JOIN MOVIE m ON stm.MOVIEID = m.MOVIEID
 WHERE u.USERID = :USERID
 ORDER BY t.PURCHASE_DATETIME DESC";
 
+        private const string SqlMovies = @"
+SELECT MOVIEID, MOVIE_TITLE
+FROM MOVIE
+ORDER BY MOVIE_TITLE";
+
+        // MovieTheatherCityHallOccupancyPerformer:
+        // For any movie, show top 3 theatre city halls by occupancy percentage.
+        // Only paid tickets are counted as occupancy (BOOKING_STATUS = 'Booked').
         private const string SqlTop3Occupancy = @"
 SELECT *
 FROM (
-    SELECT
-        M.MOVIE_TITLE,
-        H.HALLID,
-        H.HALL_CAPACITY,
-        COUNT(T.TICKETID) AS TICKETS_SOLD,
-        ROUND((COUNT(T.TICKETID) / H.HALL_CAPACITY) * 100, 2) AS OCCUPANCY_PERCENT
-    FROM MOVIE M
-    JOIN MOVIE_SHOW MS ON M.MOVIEID = MS.MOVIEID
-    JOIN SHOW S ON MS.SHOWID = S.SHOWID
-    JOIN SHOW_TICKET ST ON S.SHOWID = ST.SHOWID
-    JOIN TICKET T ON ST.TICKETID = T.TICKETID
-    JOIN HALL H ON MS.HALLID = H.HALLID
-    WHERE T.TICKET_STATUS = 'PAID'
-    GROUP BY M.MOVIE_TITLE, H.HALLID, H.HALL_CAPACITY
+    SELECT 
+        m.MOVIE_TITLE,
+        th.THEATRE_NAME,
+        th.THEATRE_CITY_HALL,
+        h.HALLID,
+        h.HALL_CAPACITY,
+        COUNT(t.TICKETID) AS SEATS_BOOKED,
+        ROUND((COUNT(t.TICKETID)/h.HALL_CAPACITY)*100, 2) AS OCCUPANCY_PERCENT
+    FROM MOVIE m
+    JOIN MOVIE_SHOW ms ON m.MOVIEID = ms.MOVIEID
+    JOIN SHOW s ON ms.SHOWID = s.SHOWID
+    JOIN SHOW_TICKET st ON s.SHOWID = st.SHOWID
+    JOIN TICKET t ON st.TICKETID = t.TICKETID
+    JOIN HALL h ON ms.HALLID = h.HALLID
+    JOIN THEATRE th ON ms.THEATREID = th.THEATREID
+    WHERE m.MOVIEID = :MOVIEID
+      AND t.BOOKING_STATUS = 'Booked'
+    GROUP BY m.MOVIE_TITLE, th.THEATRE_NAME, th.THEATRE_CITY_HALL, h.HALLID, h.HALL_CAPACITY
     ORDER BY OCCUPANCY_PERCENT DESC
 )
 WHERE ROWNUM <= 3";
@@ -54,7 +66,32 @@ WHERE ROWNUM <= 3";
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
+            {
+                EnsureOccupancyGridColumns();
+                BindMovieDropdown();
                 BindTop3Occupancy();
+            }
+        }
+
+        protected void ddlMovie_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            EnsureOccupancyGridColumns();
+            BindTop3Occupancy();
+        }
+
+        private void EnsureOccupancyGridColumns()
+        {
+            // Force the expected columns regardless of stale markup/deployed files.
+            GridViewOccupancy.AutoGenerateColumns = false;
+            GridViewOccupancy.Columns.Clear();
+
+            GridViewOccupancy.Columns.Add(new BoundField { DataField = "MOVIE_TITLE", HeaderText = "MOVIE_TITLE" });
+            GridViewOccupancy.Columns.Add(new BoundField { DataField = "THEATRE_NAME", HeaderText = "THEATRE_NAME" });
+            GridViewOccupancy.Columns.Add(new BoundField { DataField = "THEATRE_CITY_HALL", HeaderText = "THEATRE_CITY_HALL" });
+            GridViewOccupancy.Columns.Add(new BoundField { DataField = "HALLID", HeaderText = "HALLID" });
+            GridViewOccupancy.Columns.Add(new BoundField { DataField = "HALL_CAPACITY", HeaderText = "HALL_CAPACITY" });
+            GridViewOccupancy.Columns.Add(new BoundField { DataField = "SEATS_BOOKED", HeaderText = "SEATS_BOOKED" });
+            GridViewOccupancy.Columns.Add(new BoundField { DataField = "OCCUPANCY_PERCENT", HeaderText = "OCCUPANCY_PERCENT" });
         }
 
         protected void btnSearch_Click(object sender, EventArgs e)
@@ -156,6 +193,9 @@ WHERE ROWNUM <= 3";
                     {
                         cmd.CommandText = SqlTop3Occupancy;
                         cmd.CommandType = CommandType.Text;
+                        var p = new System.Data.OracleClient.OracleParameter("MOVIEID", System.Data.OracleClient.OracleType.Number);
+                        p.Value = GetSelectedMovieId();
+                        cmd.Parameters.Add(p);
                         using (var da = new System.Data.OracleClient.OracleDataAdapter(cmd))
                         {
                             da.Fill(dt);
@@ -170,6 +210,87 @@ WHERE ROWNUM <= 3";
                 GridViewOccupancy.DataSource = null;
                 GridViewOccupancy.DataBind();
             }
+        }
+
+        private void BindMovieDropdown()
+        {
+            string connStr = ConfigurationManager.ConnectionStrings["ConnectionString"]?.ConnectionString;
+            var ddlMovie = GetMovieDropdown();
+            if (ddlMovie == null) return;
+
+            ddlMovie.Items.Clear();
+
+            if (string.IsNullOrEmpty(connStr))
+            {
+                ddlMovie.Items.Add(new ListItem("No movies (missing connection)", "0"));
+                return;
+            }
+
+            try
+            {
+                var dt = new DataTable();
+                using (var conn = new System.Data.OracleClient.OracleConnection(connStr))
+                {
+                    conn.Open();
+                    using (var cmd = conn.CreateCommand())
+                    {
+                        cmd.CommandText = SqlMovies;
+                        cmd.CommandType = CommandType.Text;
+                        using (var da = new System.Data.OracleClient.OracleDataAdapter(cmd))
+                        {
+                            da.Fill(dt);
+                        }
+                    }
+                }
+
+                ddlMovie.DataSource = dt;
+                ddlMovie.DataTextField = "MOVIE_TITLE";
+                ddlMovie.DataValueField = "MOVIEID";
+                ddlMovie.DataBind();
+
+                if (ddlMovie.Items.Count == 0)
+                {
+                    ddlMovie.Items.Add(new ListItem("No movies found", "0"));
+                }
+                else
+                {
+                    ddlMovie.SelectedIndex = 0;
+                }
+            }
+            catch
+            {
+                ddlMovie.Items.Clear();
+                ddlMovie.Items.Add(new ListItem("Unable to load movies", "0"));
+            }
+        }
+
+        private decimal GetSelectedMovieId()
+        {
+            var ddlMovie = GetMovieDropdown();
+            if (ddlMovie == null) return 1;
+
+            if (decimal.TryParse(ddlMovie.SelectedValue, out decimal movieId) && movieId > 0)
+                return movieId;
+            return 1;
+        }
+
+        private DropDownList GetMovieDropdown()
+        {
+            return FindControlRecursive(this, "ddlMovie") as DropDownList;
+        }
+
+        private static Control FindControlRecursive(Control root, string id)
+        {
+            if (root == null) return null;
+            if (string.Equals(root.ID, id, StringComparison.Ordinal)) return root;
+
+            foreach (Control child in root.Controls)
+            {
+                var match = FindControlRecursive(child, id);
+                if (match != null) return match;
+            }
+
+            return null;
         }
     }
 }

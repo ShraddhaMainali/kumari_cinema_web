@@ -76,14 +76,25 @@
 
             <div class="report-section-spacer">
                 <h3 class="report-section-title">Top 3 Theatre Occupancy</h3>
+                <div class="report-search-box">
+                    <span style="font-weight: 600;">Movie:</span>
+                    <asp:DropDownList
+                        ID="ddlReportMovie"
+                        runat="server"
+                        CssClass="report-dropdown"
+                        AutoPostBack="true"
+                        OnSelectedIndexChanged="ddlReportMovie_SelectedIndexChanged" />
+                </div>
                 <div class="report-grid">
                     <asp:GridView ID="GridViewReportOccupancy" runat="server" AutoGenerateColumns="false" Width="100%">
                         <Columns>
-                            <asp:BoundField DataField="MOVIE_TITLE" HeaderText="Movie Title" />
-                            <asp:BoundField DataField="HALLID" HeaderText="Hall ID" />
-                            <asp:BoundField DataField="HALL_CAPACITY" HeaderText="Hall Capacity" />
-                            <asp:BoundField DataField="TICKETS_SOLD" HeaderText="Tickets Sold" />
-                            <asp:BoundField DataField="OCCUPANCY_PERCENT" HeaderText="Occupancy Percent" />
+                            <asp:BoundField DataField="MOVIE_TITLE" HeaderText="MOVIE_TITLE" />
+                            <asp:BoundField DataField="THEATRE_NAME" HeaderText="THEATRE_NAME" />
+                            <asp:BoundField DataField="THEATRE_CITY_HALL" HeaderText="THEATRE_CITY_HALL" />
+                            <asp:BoundField DataField="HALLID" HeaderText="HALLID" />
+                            <asp:BoundField DataField="HALL_CAPACITY" HeaderText="HALL_CAPACITY" />
+                            <asp:BoundField DataField="SEATS_BOOKED" HeaderText="SEATS_BOOKED" />
+                            <asp:BoundField DataField="OCCUPANCY_PERCENT" HeaderText="OCCUPANCY_PERCENT" />
                         </Columns>
                     </asp:GridView>
                 </div>

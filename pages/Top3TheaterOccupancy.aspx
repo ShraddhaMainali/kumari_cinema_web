@@ -120,14 +120,25 @@
 
             <div class="section-separator">
                 <h2>Movie Theater City Hall Occupancy Performer</h2>
+                <div class="search-box">
+                    <span style="font-weight: 600;">Movie:</span>
+                    <asp:DropDownList
+                        ID="ddlMovie"
+                        runat="server"
+                        AutoPostBack="true"
+                        OnSelectedIndexChanged="ddlMovie_SelectedIndexChanged"
+                        style="padding: 10px 14px; min-width: 260px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem;" />
+                </div>
                 <div class="grid">
                     <asp:GridView ID="GridViewOccupancy" runat="server" AutoGenerateColumns="false" Width="100%">
                         <Columns>
                             <asp:BoundField DataField="MOVIE_TITLE" HeaderText="Movie Title" />
+                            <asp:BoundField DataField="THEATRE_NAME" HeaderText="Theatre Name" />
+                            <asp:BoundField DataField="THEATRE_CITY_HALL" HeaderText="Theatre City Hall" />
                             <asp:BoundField DataField="HALLID" HeaderText="Hall ID" />
                             <asp:BoundField DataField="HALL_CAPACITY" HeaderText="Hall Capacity" />
-                            <asp:BoundField DataField="TICKETS_SOLD" HeaderText="Tickets Sold" />
-                            <asp:BoundField DataField="OCCUPANCY_PERCENT" HeaderText="Occupancy Percent" />
+                            <asp:BoundField DataField="SEATS_BOOKED" HeaderText="Seats Booked" />
+                            <asp:BoundField DataField="OCCUPANCY_PERCENT" HeaderText="Occupancy Percent (%)" />
                         </Columns>
                     </asp:GridView>
                 </div>
