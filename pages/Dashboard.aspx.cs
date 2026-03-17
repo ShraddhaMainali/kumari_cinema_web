@@ -82,9 +82,29 @@ WHERE ROWNUM <= 3";
             if (IsPostBack)
             {
                 ReportPanel.Visible = ReportVisible;
+                ScrollToTargetIfRequested();
                 return;
             }
             BindStatistics();
+        }
+
+        private void ScrollToTargetIfRequested()
+        {
+            string targetId = hfScrollTarget?.Value;
+            if (string.IsNullOrWhiteSpace(targetId))
+                return;
+
+            string script = @"
+(function() {
+  var id = " + System.Web.HttpUtility.JavaScriptStringEncode(targetId, addDoubleQuotes: true) + @";
+  var el = document.getElementById(id);
+  if (el && el.scrollIntoView) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+})();";
+
+            ClientScript.RegisterStartupScript(GetType(), "scrollToTarget", script, true);
+            hfScrollTarget.Value = string.Empty;
         }
 
         protected void btnViewReport_Click(object sender, EventArgs e)

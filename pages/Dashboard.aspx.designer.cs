@@ -13,6 +13,7 @@ namespace kumari_cinema_web.pages
 
     public partial class Dashboard
     {
+        protected global::System.Web.UI.WebControls.HiddenField hfScrollTarget;
         protected global::System.Web.UI.WebControls.Label lblTotalUsers;
         protected global::System.Web.UI.WebControls.Label lblTotalMovies;
         protected global::System.Web.UI.WebControls.Label lblTotalBookings;

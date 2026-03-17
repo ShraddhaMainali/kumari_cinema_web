@@ -1,6 +1,7 @@
-<%@ Page Title="Dashboard" Language="C#" MasterPageFile="~/Site1.Master" AutoEventWireup="true" CodeBehind="Dashboard.aspx.cs" Inherits="kumari_cinema_web.pages.Dashboard" %>
+<%@ Page Title="Dashboard" Language="C#" MasterPageFile="~/Site1.Master" AutoEventWireup="true" MaintainScrollPositionOnPostBack="true" CodeBehind="Dashboard.aspx.cs" Inherits="kumari_cinema_web.pages.Dashboard" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
+    <asp:HiddenField ID="hfScrollTarget" runat="server" />
     <div class="dashboard-page">
         <h2 class="dashboard-title">Dashboard</h2>
         <p class="dashboard-subtitle">Key statistics at a glance</p>
@@ -53,7 +54,7 @@
             <div class="report-search-box">
                 User ID :
                 <asp:TextBox ID="txtReportUserId" runat="server" />
-                <asp:Button ID="btnReportSearch" runat="server" Text="Search" OnClick="btnReportSearch_Click" />
+                <asp:Button ID="btnReportSearch" runat="server" Text="Search" OnClick="btnReportSearch_Click" OnClientClick="return setScrollTarget('GridViewReportTickets');" />
             </div>
             <asp:Label ID="lblReportMessage" runat="server" CssClass="report-message" Visible="false" />
             <div class="report-grid">
@@ -66,7 +67,7 @@
                 <div class="report-search-box">
                     <label for="ddlReportTheaterCityHall" style="font-weight: 600;">Theater City Hall:</label>
                     <asp:DropDownList ID="ddlReportTheaterCityHall" runat="server" CssClass="report-dropdown" />
-                    <asp:Button ID="btnReportFilterTheater" runat="server" Text="Search" OnClick="btnReportFilterTheater_Click" />
+                    <asp:Button ID="btnReportFilterTheater" runat="server" Text="Search" OnClick="btnReportFilterTheater_Click" OnClientClick="return setScrollTarget('GridViewReportTheater');" />
                 </div>
                 <asp:Label ID="lblReportTheaterMessage" runat="server" CssClass="report-message" Visible="false" />
                 <div class="report-grid">
@@ -87,7 +88,8 @@
                         ID="btnReportSearchOccupancy"
                         runat="server"
                         Text="Search"
-                        OnClick="btnReportSearchOccupancy_Click" />
+                        OnClick="btnReportSearchOccupancy_Click"
+                        OnClientClick="return setScrollTarget('GridViewReportOccupancy');" />
                 </div>
                 <div class="report-grid">
                     <asp:GridView ID="GridViewReportOccupancy" runat="server" AutoGenerateColumns="false" Width="100%">
@@ -278,4 +280,12 @@
             .stat-value { font-size: 1.65rem; }
         }
     </style>
+
+    <script type="text/javascript">
+        function setScrollTarget(id) {
+            var hf = document.getElementById('<%= hfScrollTarget.ClientID %>');
+            if (hf) hf.value = id || '';
+            return true;
+        }
+    </script>
 </asp:Content>
