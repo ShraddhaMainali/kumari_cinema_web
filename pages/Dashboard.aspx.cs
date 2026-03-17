@@ -96,7 +96,8 @@ WHERE ROWNUM <= 3";
             if (ddlReportMovie.Items.Count == 0)
                 BindReportMovieDropdown();
             BindReportTheaterCityHall();
-            BindReportTop3Occupancy();
+            GridViewReportOccupancy.DataSource = null;
+            GridViewReportOccupancy.DataBind();
         }
 
         protected void btnReportSearch_Click(object sender, EventArgs e)
@@ -127,7 +128,7 @@ WHERE ROWNUM <= 3";
             BindReportTheaterCityHall();
         }
 
-        protected void ddlReportMovie_SelectedIndexChanged(object sender, EventArgs e)
+        public void btnReportSearchOccupancy_Click(object sender, EventArgs e)
         {
             BindReportTop3Occupancy();
         }

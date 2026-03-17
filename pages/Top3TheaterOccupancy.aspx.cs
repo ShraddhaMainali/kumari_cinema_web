@@ -69,11 +69,12 @@ WHERE ROWNUM <= 3";
             {
                 EnsureOccupancyGridColumns();
                 BindMovieDropdown();
-                BindTop3Occupancy();
+                GridViewOccupancy.DataSource = null;
+                GridViewOccupancy.DataBind();
             }
         }
 
-        protected void ddlMovie_SelectedIndexChanged(object sender, EventArgs e)
+        protected void btnSearchOccupancy_Click(object sender, EventArgs e)
         {
             EnsureOccupancyGridColumns();
             BindTop3Occupancy();

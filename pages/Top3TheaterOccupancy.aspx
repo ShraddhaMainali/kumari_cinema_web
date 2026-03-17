@@ -125,9 +125,13 @@
                     <asp:DropDownList
                         ID="ddlMovie"
                         runat="server"
-                        AutoPostBack="true"
-                        OnSelectedIndexChanged="ddlMovie_SelectedIndexChanged"
+                        AutoPostBack="false"
                         style="padding: 10px 14px; min-width: 260px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem;" />
+                    <asp:Button
+                        ID="btnSearchOccupancy"
+                        runat="server"
+                        Text="Search"
+                        OnClick="btnSearchOccupancy_Click" />
                 </div>
                 <div class="grid">
                     <asp:GridView ID="GridViewOccupancy" runat="server" AutoGenerateColumns="false" Width="100%">

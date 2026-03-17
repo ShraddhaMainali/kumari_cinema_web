@@ -29,6 +29,7 @@ namespace kumari_cinema_web.pages
         protected global::System.Web.UI.WebControls.Label lblReportTheaterMessage;
         protected global::System.Web.UI.WebControls.GridView GridViewReportTheater;
         protected global::System.Web.UI.WebControls.DropDownList ddlReportMovie;
+        protected global::System.Web.UI.WebControls.Button btnReportSearchOccupancy;
         protected global::System.Web.UI.WebControls.GridView GridViewReportOccupancy;
     }
 }

@@ -82,8 +82,12 @@
                         ID="ddlReportMovie"
                         runat="server"
                         CssClass="report-dropdown"
-                        AutoPostBack="true"
-                        OnSelectedIndexChanged="ddlReportMovie_SelectedIndexChanged" />
+                        AutoPostBack="false" />
+                    <asp:Button
+                        ID="btnReportSearchOccupancy"
+                        runat="server"
+                        Text="Search"
+                        OnClick="btnReportSearchOccupancy_Click" />
                 </div>
                 <div class="report-grid">
                     <asp:GridView ID="GridViewReportOccupancy" runat="server" AutoGenerateColumns="false" Width="100%">
